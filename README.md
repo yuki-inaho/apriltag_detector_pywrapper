@@ -7,6 +7,3 @@ pip install --user -r requirements.txt
 `
 python setup.py install
 `
-
-# Usage
-
