@@ -1,23 +1,20 @@
-from distutils.core import setup, Extension
 from Cython.Build import cythonize
 from Cython.Distutils import build_ext
+from setuptools import setup, find_packages, Extension
 import numpy
 import sys
 import os
 import glob
-import pdb
-lib_folder = os.path.join(sys.prefix,'local', 'lib')
 
+
+lib_folder = os.path.join(sys.prefix,'local', 'lib')
 cvlibs = list()
 
 for file in glob.glob(os.path.join(lib_folder, 'libopencv_*')):
     cvlibs.append(file.split('.')[0])
 cvlibs = list(set(cvlibs))
-#cvlibs = ['-L{}'.format(lib_folder)] + \
 cvlibs = ['opencv_{}'.format(lib.split(os.path.sep)[-1].split('libopencv_')[-1]) for lib in cvlibs]
-#cvlibs.append("-L"+os.getcwd())
-#cvlibs.append("april_detector_manager")
-lib_dirs = [lib_folder]
+lib_dirs = [lib_folder, "src"]
 
 sources = ["april_detector_pywrapper.pyx", "src/example/april_detector_manager.cpp"] + glob.glob("src/*.cc")
 
@@ -27,7 +24,7 @@ setup(
     version='1.0.0',
     description='Python wrapper of april detector(based on ethz_apriltag2)',
     author='yuki-inaho',
-
+    
     ext_modules = cythonize(
                  [
                     Extension("april_detector_pywrapper",
@@ -40,7 +37,6 @@ setup(
                         library_dirs=lib_dirs,
                         libraries=cvlibs,
                         extra_compile_args=["-std=gnu++11", "-O3", "-fopenmp"],
-                        #extra_compile_args=["-std=gnu++11", "-O3"],
                         extra_link_args=["-fopenmp"],
                         language="c++",
                     ),
