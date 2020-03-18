@@ -6,7 +6,6 @@ import sys
 import os
 import glob
 
-
 lib_folder = os.path.join(sys.prefix,'local', 'lib')
 cvlibs = list()
 
@@ -14,17 +13,15 @@ for file in glob.glob(os.path.join(lib_folder, 'libopencv_*')):
     cvlibs.append(file.split('.')[0])
 cvlibs = list(set(cvlibs))
 cvlibs = ['opencv_{}'.format(lib.split(os.path.sep)[-1].split('libopencv_')[-1]) for lib in cvlibs]
-lib_dirs = [lib_folder, "src"]
+lib_dirs = [lib_folder]
 
 sources = ["april_detector_pywrapper.pyx", "src/example/april_detector_manager.cpp"] + glob.glob("src/*.cc")
 
 setup(
     name = "april_detector_pywrapper",
-
     version='1.0.0',
     description='Python wrapper of april detector(based on ethz_apriltag2)',
     author='yuki-inaho',
-    
     ext_modules = cythonize(
                  [
                     Extension("april_detector_pywrapper",
@@ -51,7 +48,7 @@ setup(
                         libraries=cvlibs,
                         language="c++"                    
                     )                    
-                 ]
+                 ],
     ),
     cmdclass = {'build_ext': build_ext},
 )
