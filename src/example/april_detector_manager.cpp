@@ -156,6 +156,18 @@ std::vector<double> AprilTagDetector::_extractTagInfo(AprilTags::TagDetection& d
   }
   result_ary.push_back(detection.cxy.first);
   result_ary.push_back(detection.cxy.second);
+  result_ary.push_back(translation(0));
+  result_ary.push_back(translation(1));
+  result_ary.push_back(translation(2));
+  result_ary.push_back(fixed_rot(0,0));
+  result_ary.push_back(fixed_rot(0,1));
+  result_ary.push_back(fixed_rot(0,2));
+  result_ary.push_back(fixed_rot(1,0));
+  result_ary.push_back(fixed_rot(1,1));
+  result_ary.push_back(fixed_rot(1,2));
+  result_ary.push_back(fixed_rot(2,0));
+  result_ary.push_back(fixed_rot(2,1));
+  result_ary.push_back(fixed_rot(2,2));
 
   return result_ary;
 }
