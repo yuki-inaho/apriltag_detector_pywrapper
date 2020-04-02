@@ -1,5 +1,7 @@
 # distutils: language = c++
 # distutils: sources = src/example/april_detector_manager.cpp
+# distutils: extra_compile_args = -fopenmp
+# distutils: extra_link_args = -fopenmp
 
 import sys
 import os
