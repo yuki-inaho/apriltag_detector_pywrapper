@@ -5,14 +5,16 @@ import numpy
 import sys
 import os
 import glob
+import pkgconfig
 
-lib_folder = os.path.join(sys.prefix,'local', 'lib')
-cvlibs = list()
+#lib_folder = os.path.join(sys.prefix, 'local', 'lib')
+#cvlibs = list()
 
-for file in glob.glob(os.path.join(lib_folder, 'libopencv_*')):
-    cvlibs.append(file.split('.')[0])
-cvlibs = list(set(cvlibs))
-cvlibs = ['opencv_{}'.format(lib.split(os.path.sep)[-1].split('libopencv_')[-1]) for lib in cvlibs]
+#for file in glob.glob(os.path.join(lib_folder, 'libopencv_*')):
+#    cvlibs.append(file.split('.')[0])
+#cvlibs = list(set(cvlibs))
+#cvlibs = ['opencv_{}'.format(lib.split(os.path.sep)[-1].split('libopencv_')[-1]) for lib in cvlibs]
+cvlibs = pkgconfig.libs('opencv')
 lib_dirs = [lib_folder]
 
 sources = ["april_detector_pywrapper.pyx", "src/example/april_detector_manager.cpp"] + glob.glob("src/*.cc")
