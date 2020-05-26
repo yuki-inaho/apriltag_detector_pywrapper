@@ -7,8 +7,8 @@ import os
 import glob
 import pkgconfig
 
-#lib_folder = os.path.join(sys.prefix, 'local', 'lib')
-#cvlibs = list()
+lib_folder = os.path.join(sys.prefix, 'local', 'lib')
+cvlibs = list()
 
 #for file in glob.glob(os.path.join(lib_folder, 'libopencv_*')):
 #    cvlibs.append(file.split('.')[0])
