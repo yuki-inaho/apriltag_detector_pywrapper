@@ -1,21 +1,30 @@
 from Cython.Build import cythonize
 from Cython.Distutils import build_ext
-from setuptools import setup, find_packages, Extension
+from setuptools import setup, Extension
 import numpy
 import sys
 import os
 import glob
 import pkgconfig
 
-lib_folder = os.path.join(sys.prefix, 'local', 'lib')
-cvlibs = list()
 
-for file in glob.glob(os.path.join(lib_folder, 'libopencv_*')):
-    cvlibs.append(file.split('.')[0])
-cvlibs = list(set(cvlibs))
-cvlibs = ['opencv_{}'.format(lib.split(os.path.sep)[-1].split('libopencv_')[-1]) for lib in cvlibs]
-#cvlibs = pkgconfig.libs('opencv')
-lib_dirs = [lib_folder]
+opencv_cflags = pkgconfig.cflags('opencv')
+cvlibs_string = pkgconfig.libs('opencv')
+
+lib_dirs = []
+cvlibs = list()
+cvlibs_pkgcfg_list = cvlibs_string.split()
+for elem in cvlibs_pkgcfg_list:
+    # like u'-L/usr/local/lib'
+    if elem.startswith("-L"):
+        lib_dirs.append(str(elem))
+    # like u'-lopencv_stitching'
+    elif elem.startswith("-l"):
+        _cvlib = 'opencv_{}'.format(elem.split('-lopencv_')[-1])
+        cvlibs.append(_cvlib)
+    else:
+        pass
+
 
 sources = ["april_detector_pywrapper.pyx", "src/example/april_detector_manager.cpp"] + glob.glob("src/*.cc")
 
