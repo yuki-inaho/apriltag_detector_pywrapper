@@ -1,17 +1,17 @@
+import pdb
+from opencv_mat cimport *
+from libc.string cimport memcpy
 import numpy as np
 cimport numpy as np  # for np.ndarray
-from libc.string cimport memcpy
-from opencv_mat cimport *
-import pdb
 
 # inspired and adapted from http://makerwannabe.blogspot.ch/2013/09/calling-opencv-functions-via-cython.html
 # https://github.com/solivr/cython_opencvMat
 cdef Mat np2Mat3D(np.ndarray ary):
-    assert ary.ndim==3 and ary.shape[2]==3, "ASSERT::3channel RGB only!!"
-    ary = np.dstack((ary[...,2], ary[...,1], ary[...,0])) #RGB -> BGR
+    assert ary.ndim == 3 and ary.shape[2] == 3, "ASSERT::3channel RGB only!!"
+    ary = np.dstack((ary[..., 2], ary[..., 1], ary[..., 0]))  # RGB -> BGR
 
-    cdef np.ndarray[np.uint8_t, ndim=3, mode ='c'] np_buff = np.ascontiguousarray(ary, dtype=np.uint8)
-    cdef unsigned int* im_buff = <unsigned int*> np_buff.data
+    cdef np.ndarray[np.uint8_t, ndim= 3, mode = 'c'] np_buff = np.ascontiguousarray(ary, dtype=np.uint8)
+    cdef unsigned int * im_buff = <unsigned int*> np_buff.data
     cdef int r = ary.shape[0]
     cdef int c = ary.shape[1]
     cdef Mat m
@@ -20,10 +20,10 @@ cdef Mat np2Mat3D(np.ndarray ary):
     return m
 
 cdef Mat np2Mat2D(np.ndarray ary):
-    assert ary.ndim==2 , "ASSERT::1 channel grayscale only!!"
+    assert ary.ndim == 2, "ASSERT::1 channel grayscale only!!"
 
-    cdef np.ndarray[np.uint8_t, ndim=2, mode ='c'] np_buff = np.ascontiguousarray(ary, dtype=np.uint8)
-    cdef unsigned int* im_buff = <unsigned int*> np_buff.data
+    cdef np.ndarray[np.uint8_t, ndim= 2, mode = 'c'] np_buff = np.ascontiguousarray(ary, dtype=np.uint8)
+    cdef unsigned int * im_buff = <unsigned int*> np_buff.data
     cdef int r = ary.shape[0]
     cdef int c = ary.shape[1]
     cdef Mat m
@@ -32,21 +32,23 @@ cdef Mat np2Mat2D(np.ndarray ary):
     return m
 
 cdef Mat np2Mat2D_F32(np.ndarray ary):
-    assert ary.ndim==2 , "ASSERT::1 channel grayscale only!!"
-    assert ary.dtype==np.float32, "ASSERT dtype=float32"
+    assert ary.ndim == 2, "ASSERT::1 channel grayscale only!!"
+    assert ary.dtype == np.float32, "ASSERT dtype=float32"
 
-    cdef np.ndarray[np.float32_t, ndim=2, mode ='c'] np_buff = np.ascontiguousarray(ary, dtype=np.float32)
-    cdef float* im_buff = <float*> np_buff.data
+    cdef np.ndarray[np.float32_t, ndim= 2, mode = 'c'] np_buff = np.ascontiguousarray(ary, dtype=np.float32)
+    cdef float * im_buff = <float*> np_buff.data
     cdef int r = ary.shape[0]
     cdef int c = ary.shape[1]
     cdef Mat m
     m.create(r, c, CV_32FC1)
-    memcpy(m.data, im_buff, r*c*sizeof(float)) # 4 is the size of 
+    memcpy(m.data, im_buff, r*c*sizeof(float))  # 4 is the size of
     return m
+
 
 def npto32ftonp(nparr):
     assert nparr.dtype == np.float32, "array dtype must be float32"
     return Mat2np(np2Mat2D_F32(nparr))
+
 
 cdef Mat np2Mat(np.ndarray ary):
     cdef Mat out
@@ -67,26 +69,26 @@ cdef object Mat2np(Mat m):
     cdef Py_buffer buf_info
     # Define the size / len of data
 
-    cdef size_t len = m.rows*m.cols*m.elemSize() 
+    cdef size_t len = m.rows*m.cols*m.elemSize()
 
     # Fill buffer
-    PyBuffer_FillInfo(&buf_info, NULL, m.data, len, False, PyBUF_FULL_RO)
+    PyBuffer_FillInfo( & buf_info, NULL, m.data, len, False, PyBUF_FULL_RO)
     # Get Pyobject from buffer data
-    Pydata  = PyMemoryView_FromBuffer(&buf_info)
+    Pydata  = PyMemoryView_FromBuffer( & buf_info)
 
     # Create ndarray with data
     # the dimension of the output array is 2 if the image is grayscale
-    if m.channels() >1 :
+    if m.channels() > 1:
         shape_array = (m.rows, m.cols, m.channels())
     else:
         shape_array = (m.rows, m.cols)
 
-    if m.channels() >1 :
-        pyary = np.asarray(Pydata, dtype=np.uint8).reshape(shape_array) 
-    else :
-        pyary = np.frombuffer(Pydata.tobytes(), dtype=np.uint16).reshape(shape_array)     
+    if m.channels() > 1:
+        pyary = np.asarray(Pydata, dtype=np.uint8).reshape(shape_array)
+    else:
+        pyary = np.frombuffer(
+            Pydata.tobytes(), dtype=np.uint16).reshape(shape_array)
     return pyary
-
 
     '''
     #if m.depth() == CV_32F :
@@ -95,7 +97,6 @@ cdef object Mat2np(Mat m):
     else :
     #8-bit image
         ary = np.ndarray(shape=shape_array, buffer=Pydata, order='c', dtype=np.uint8)
-    
     if m.channels() == 3:
         # BGR -> RGB
         ary = np.dstack((ary[...,2], ary[...,1], ary[...,0]))
@@ -105,6 +106,7 @@ cdef object Mat2np(Mat m):
     #pyarr = ary
     return pyarr
     '''
+
 
 def np2Mat2np(nparray):
     cdef Mat m
