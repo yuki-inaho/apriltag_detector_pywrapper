@@ -11,13 +11,14 @@ import pkgconfig
 opencv_cflags = pkgconfig.cflags('opencv')
 cvlibs_string = pkgconfig.libs('opencv')
 
+
 lib_dirs = []
 cvlibs = list()
 cvlibs_pkgcfg_list = cvlibs_string.split()
 for elem in cvlibs_pkgcfg_list:
     # like u'-L/usr/local/lib'
     if elem.startswith("-L"):
-        lib_dirs.append(str(elem))
+        lib_dirs.append(str('{}'.format(elem.split('-L')[-1])))
     # like u'-lopencv_stitching'
     elif elem.startswith("-l"):
         _cvlib = 'opencv_{}'.format(elem.split('-lopencv_')[-1])
