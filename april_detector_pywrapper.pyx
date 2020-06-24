@@ -5,7 +5,6 @@
 
 import sys
 import os
-#from pyx import *
 
 from libc.stdint cimport int32_t
 from libcpp.vector cimport vector

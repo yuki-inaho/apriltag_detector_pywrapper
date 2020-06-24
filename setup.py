@@ -8,8 +8,9 @@ import glob
 import pkgconfig
 
 
-opencv_cflags = pkgconfig.cflags('opencv')
+opencv_cflags = pkgconfig.cflags('opencv').split()
 cvlibs_string = pkgconfig.libs('opencv')
+cvinclude = [str('{}'.format(elem.split('-I')[-1])) for elem in opencv_cflags]
 
 
 lib_dirs = []
@@ -40,12 +41,10 @@ setup(
             Extension("april_detector_pywrapper",
                       sources=sources,
                       include_dirs=[numpy.get_include(),
-                                    os.path.join(
-                                        sys.prefix, 'include', 'opencv2'),
                                     "/usr/include/eigen3",
                                     os.path.join(
                           os.getcwd(), 'include'),
-                      ],
+                      ] + cvinclude,
                       library_dirs=lib_dirs,
                       libraries=cvlibs,
                       extra_compile_args=["-std=gnu++11", "-O3", "-fopenmp"],
@@ -55,10 +54,9 @@ setup(
 
             Extension("opencv_mat",
                       sources=["opencv_mat.pyx"],
-                      include_dirs=[numpy.get_include(),
-                                    os.path.join(
-                          sys.prefix, 'include', 'opencv2'),
-                      ],
+                      include_dirs=[
+                          numpy.get_include(),
+                      ] + cvinclude,
                       extra_link_args=["-std=gnu++11", "-O3"],
                       library_dirs=lib_dirs,
                       libraries=cvlibs,
