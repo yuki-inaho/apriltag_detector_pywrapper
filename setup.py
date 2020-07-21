@@ -55,7 +55,7 @@ setup(
                       include_dirs=[
                           numpy.get_include(),
                           cvlib_include_folder
-                      ]
+                      ],
                       extra_link_args=["-std=gnu++11", "-O3"],
                       library_dirs=lib_dirs,
                       libraries=cvlibs,
