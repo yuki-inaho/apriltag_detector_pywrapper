@@ -2,30 +2,28 @@ from Cython.Build import cythonize
 from Cython.Distutils import build_ext
 from setuptools import setup, Extension
 import numpy
-import sys
 import os
 import glob
-import pkgconfig
 
+zense_install_dir = os.environ["PICOZENSE_INSTALL_DIR"]
+cvlib_folder = os.path.join(
+    zense_install_dir,
+    'Thirdparty', 'opencv-3.4.1', 'lib'
+)
 
-opencv_cflags = pkgconfig.cflags('opencv').split()
-cvlibs_string = pkgconfig.libs('opencv')
-cvinclude = [str('{}'.format(elem.split('-I')[-1])) for elem in opencv_cflags]
+cvlib_include_folder = os.path.join(
+    zense_install_dir,
+    'Thirdparty', 'opencv-3.4.1', 'include'
+)
 
+lib_dirs = [cvlib_folder]
 
-lib_dirs = []
 cvlibs = list()
-cvlibs_pkgcfg_list = cvlibs_string.split()
-for elem in cvlibs_pkgcfg_list:
-    # like u'-L/usr/local/lib'
-    if elem.startswith("-L"):
-        lib_dirs.append(str('{}'.format(elem.split('-L')[-1])))
-    # like u'-lopencv_stitching'
-    elif elem.startswith("-l"):
-        _cvlib = 'opencv_{}'.format(elem.split('-lopencv_')[-1])
-        cvlibs.append(_cvlib)
-    else:
-        pass
+for file in glob.glob(os.path.join(cvlib_folder, 'libopencv_*.so')):
+    cvlibs.append(os.path.basename(file).split('.')[0])
+cvlibs = list(set(cvlibs))
+cvlibs = ['opencv_{}'.format(
+    lib.split(os.path.sep)[-1].split('libopencv_')[-1]) for lib in cvlibs]
 
 
 sources = ["april_detector_pywrapper.pyx",
