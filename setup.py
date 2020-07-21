@@ -40,9 +40,9 @@ setup(
                       sources=sources,
                       include_dirs=[numpy.get_include(),
                                     "/usr/include/eigen3",
-                                    os.path.join(
-                          os.getcwd(), 'include'),
-                      ] + cvinclude,
+                                    os.path.join(os.getcwd(), 'include'),
+                                    cvlib_include_folder
+                      ],
                       library_dirs=lib_dirs,
                       libraries=cvlibs,
                       extra_compile_args=["-std=gnu++11", "-O3", "-fopenmp"],
