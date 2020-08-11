@@ -7,7 +7,7 @@ video_mode = True
 
 def main():
     if not video_mode:
-        img = cv2.imread("test.png")
+        img = cv2.imread("/home/inaho-04/Project/apriltag_detector_pywrapper/example/1596950807490547895.png")
         height, width, _ = img.shape
 
         fx = 600
@@ -20,9 +20,9 @@ def main():
         detector.setImageSize(width, height)
         detector.setCameraParams(fx, fy, cx, cy)
         detector.setTagSize(tagSize)
-        detector.setTagCodes("36h9")
+        detector.setTagCodes("36h11".encode('utf-8'))
         detector.setup()
-        detector.getDetectedInfo(img, draw_flag=True)
+        detector.getDetectedInfo(img, draw_flag=False)
         taginfo_list = detector.extractTagInfo()
         res_img = detector.getDetectedImage()
 
@@ -35,25 +35,26 @@ def main():
         cv2.waitKey(10)
         cv2.destroyAllWindows()
     else:
-
         cam = cv2.VideoCapture(0)
+        cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+        cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
         status, img = cam.read()
         while not status:
             status, img = cam.read()
 
         height, width, _ = img.shape
 
-        fx = 600
-        fy = 600
-        cx = int(width/2)
-        cy = int(height/2)
+        fx = 600.0
+        fy = 600.0
+        cx = float(int(width/2))
+        cy = float(int(height/2))
         tagSize = 0.025
 
         detector = PyAprilTagDetector()
         detector.setImageSize(width, height)
         detector.setCameraParams(fx, fy, cx, cy)
         detector.setTagSize(tagSize)
-        detector.setTagCodes("36h9")
+        detector.setTagCodes("36h11".encode('utf-8'))
         detector.setup()
 
         intrinsic_parameter_matrix = np.array(
@@ -68,7 +69,7 @@ def main():
             taginfo_list = detector.extractTagInfo()
             res_img = detector.getDetectedImage()
             cv2.imshow("res_img", res_img)
-
+        
         cv2.imwrite("res_img.png", res_img)
         cv2.waitKey(10)
         cv2.destroyAllWindows()

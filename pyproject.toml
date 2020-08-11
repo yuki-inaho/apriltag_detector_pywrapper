@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "apriltag_detector_pywrapper"
+version = "0.1.0"
+description = ""
+authors = ["Yuki Yoshikawa <yoshikawa@inaho.co>"]
+
+[tool.poetry.dependencies]
+python = "^2.7"
+numpy = "1.16.6"
+opencv-python = "4.2.0.32"
+pkgconfig = "^1.5.1"
+click = "^7.1.2"
+cython = "^0.29.21"
+setuptools = "^49.2.1"
+pytz = "^2020.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
