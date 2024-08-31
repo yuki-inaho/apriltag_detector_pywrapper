@@ -1,5 +1,5 @@
 numpy==1.21.4
 cython==0.29.25
-opencv-python==4.5.4.60
+opencv-python==4.8.1.78
 pkgconfig==1.5.5
 pytz==2021.3
